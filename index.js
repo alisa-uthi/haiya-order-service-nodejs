@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(cors())
 
 // Routes
-app.use('/auth', require('./routes/auth_route'))
+app.use('/', require('./routes/order_route'))
 
 const PORT = process.env.PORT || 8002
 
