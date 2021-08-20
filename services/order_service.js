@@ -7,7 +7,7 @@ export const getOrderHistoryByUserId = async (userId) => {
     query += 'ORDER BY Ord_PayTimestamp DESC;'
 
     try {
-        const result = await connection.promise().execute(query, [ userId, OrderStatus.DELIVERED.toString() ])
+        const result = await connection.promise().execute(query, [ userId, OrderStatus.DELIVERED ])
         return result[0]
     } catch (error) {
         throw new Error(`Get Order History By User Id: ${error.message}`)
@@ -24,7 +24,7 @@ export const createOrderByUserId = async (userId, data) => {
             query, 
             [ 
                 data.deliveryAddress, data.deliveryPrice, data.comment, 
-                OrderStatus.CREATED.toString(), userId, data.pharmacy 
+                OrderStatus.CREATED, userId, data.pharmacy 
             ],
         )
         return result[0].insertId

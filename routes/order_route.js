@@ -96,7 +96,7 @@ router.post('/:orderId/driver/:userId/delivery', async (req, res) => {
 
         if(isInserted) {
             // Update order status to be PICKED_UP
-            const result = await orderService.updateOrderStatus(req.params.orderId, OrderStatus.PICKED_UP.toString())
+            const result = await orderService.updateOrderStatus(req.params.orderId, OrderStatus.PICKED_UP)
             if(result == 1) {
                 return res.status(200).json({ data: "The order has been picked up by the driver." })
             }
