@@ -51,17 +51,8 @@ export const getOrderByOrderId = async (orderId) => {
     let query = 'SELECT * FROM `Order` WHERE ID = ? ;'
 
     try {
-        // Get order by id
-        let order = await connection.promise().execute(query, [ orderId ])
-        let result = order[0][0]
-
-        if(result) {
-            // Get delivery address of the order
-            const address = await axios.get(`http://user-profile-service:8000/address/${result.Ord_DelAddr}`) 
-            result.Delivery_Address = address.data.data.Addr_Location
-        }
-        
-        return result
+        let result = await connection.promise().execute(query, [ orderId ])
+        return result[0][0] 
     } catch (error) {
         throw new Error(`Get Order By Order Id: ${error.message}`)
     }
@@ -78,7 +69,8 @@ export const getOrderLinesByOrderId = async (orderId) => {
             // Get product name of each order line
             for (const index in orderLines) {
                 let product = await axios.get(`http://inventory-service:8001/product/${orderLines[index].Prd_ID}`) 
-                orderLines[index].productName = product.data.data.Prd_TradeName
+                orderLines[index].Prd_TradeName = product.data.data.Prd_TradeName
+                orderLines[index].Prd_Image = product.data.data.Prd_Image
             }
         }
 
