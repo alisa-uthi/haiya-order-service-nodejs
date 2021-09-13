@@ -86,6 +86,21 @@ router.post('/user/:userId', async (req, res) => {
     }
 })
 
+// Get all orders by order status
+router.get('/user/:userId/orderStatus/:status', async (req, res) => {
+    try {
+        const { userId, status } = req.params
+
+        if(Object.values(OrderStatus).toString().includes(status.toUpperCase())) {
+            let order = await orderService.getOrderByOrderStatus(status, userId) 
+            return res.status(200).json({ data: order })
+        }
+        return res.status(400).json({ error: "Invalid order status." })
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+})
+
 // Create delivery of given order id associated with a driver Id
 router.post('/:orderId/driver/:userId/delivery', async (req, res) => {
     const { orderId, userId } = req.params
