@@ -8,12 +8,12 @@ const { OrderStatus } = require('../constants/order_status')
 // Get order history by order id
 router.get('/:orderId', async (req, res) => {
     const orderId = req.params.orderId
-
+    const authorizationToken = req.headers.authorization
     try {
         let order = await orderService.getOrderByOrderId(orderId)
 
         if(order) {
-            let orderLines = await orderService.getOrderLinesByOrderId(orderId)
+            let orderLines = await orderService.getOrderLinesByOrderId(orderId, authorizationToken)
             order.orderLines = orderLines
     
             return res.status(200).json({ data: order })

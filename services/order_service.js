@@ -69,7 +69,7 @@ export const getOrderByOrderStatus = async (status, userId) => {
     }
 }
 
-export const getOrderLinesByOrderId = async (orderId) => {
+export const getOrderLinesByOrderId = async (orderId, authorizationToken) => {
     let query = 'SELECT * FROM `Order_Line` WHERE Ord_ID = ?;'
 
     try {
@@ -79,7 +79,14 @@ export const getOrderLinesByOrderId = async (orderId) => {
         if(orderLines) {
             // Get product name of each order line
             for (const index in orderLines) {
-                let product = await axios.get(`http://inventory-service:8001/product/${orderLines[index].Prd_ID}`) 
+                let product = await axios.get(
+                    `http://inventory-service:8001/product/${orderLines[index].Prd_ID}`,
+                    {
+                        headers: {
+                            Authorization: authorizationToken,
+                        }
+                    }
+                ) 
                 orderLines[index].Prd_TradeName = product.data.data.Prd_TradeName
                 orderLines[index].Prd_Image = product.data.data.Prd_Image
             }

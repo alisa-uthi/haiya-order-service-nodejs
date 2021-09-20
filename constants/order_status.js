@@ -4,6 +4,8 @@ export const OrderStatus = Object.freeze({
     PREPARING: "PREPARING",
     READY_FOR_PICKUP: "READY_FOR_PICKUP",
     PICKED_UP: "PICKED_UP",
+    ARRIVE: "ARRIVE",
     DELIVERED: "DELIVERED",
+    REJECT: "REJECT",
     CANCELLED: "CANCELLED"
 });
