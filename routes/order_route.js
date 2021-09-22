@@ -4,6 +4,7 @@ const router = express.Router()
 const orderService = require('../services/order_service')
 const deliveryService = require('../services/delivery_service')
 const { OrderStatus } = require('../constants/order_status')
+const { DeliveryStatus } = require('../constants/delivery_status')
 
 // Get order history by order id
 router.get('/:orderId', async (req, res) => {
@@ -102,22 +103,19 @@ router.get('/user/:userId/orderStatus/:status', async (req, res) => {
 })
 
 // Create delivery of given order id associated with a driver Id
-router.post('/:orderId/driver/:userId/delivery', async (req, res) => {
-    const { orderId, userId } = req.params
+router.post('/:orderId/driver/:driverId/delivery', async (req, res) => {
+    const { orderId, driverId } = req.params
+    const deliveryStatus  = req.body.deliveryStatus.toUpperCase()
 
     try {
-        // Insert delivery into table
-        const isInserted = await deliveryService.insertDelivery(orderId, userId)
-
-        if(isInserted) {
-            // Update order status to be PICKED_UP
-            const result = await orderService.updateOrderStatus(req.params.orderId, OrderStatus.PICKED_UP)
-            if(result == 1) {
-                return res.status(200).json({ data: "The order has been picked up by the driver." })
+        if(Object.values(DeliveryStatus).toString().includes(deliveryStatus)) {
+            const isInserted = await deliveryService.insertDelivery(orderId, driverId, deliveryStatus)
+            if(isInserted) {
+                return res.status(200).json({ data: 'The order has been ' + deliveryStatus })
             }
         }
 
-        return res.status(400).json({ error: "Unable to pick up the order" })
+        return res.status(400).json({ error: "Invalid delivery status." })
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
