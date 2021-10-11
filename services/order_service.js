@@ -16,15 +16,15 @@ export const getOrderHistoryByUserId = async (userId) => {
 
 export const createOrderByUserId = async (userId, data) => {
     let query = 'INSERT INTO `Order` '
-    query += '(Ord_DelAddr, Ord_DelPrice, Ord_PayTimestamp, Ord_Comment, Ord_OrderStatus, Ord_Psn_ID, Ord_Pharmacy) '
-    query += 'VALUES (?, ?, NOW(), ?, ?, ?, ?);'
+    query += '(Ord_DelAddr, Ord_DelPrice, Ord_PayTimestamp, Ord_OrderStatus, Ord_Psn_ID, Ord_Pharmacy) '
+    query += 'VALUES (?, ?, NOW(), ?, ?, ?);'
 
     try {
         const result = await connection.promise().execute(
-            query, 
-            [ 
-                data.deliveryAddress, data.deliveryPrice, data.comment, 
-                OrderStatus.CREATED, userId, data.pharmacy 
+            query,
+            [
+                data.deliveryAddress, data.deliveryPrice,
+                OrderStatus.CREATED, userId, data.pharmacy
             ],
         )
         return result[0].insertId
@@ -39,7 +39,7 @@ export const createOrderLine = async (orderId, item) => {
 
     try {
         await connection.promise().execute(
-            query, 
+            query,
             [ orderId, item.productId, item.quantity, item.totalCost, item.comment ],
         )
     } catch (error) {
@@ -52,7 +52,7 @@ export const getOrderByOrderId = async (orderId) => {
 
     try {
         let result = await connection.promise().execute(query, [ orderId ])
-        return result[0][0] 
+        return result[0][0]
     } catch (error) {
         throw new Error(`Get Order By Order Id: ${error.message}`)
     }
@@ -63,7 +63,7 @@ export const getOrderByOrderStatus = async (status, userId) => {
 
     try {
         let result = await connection.promise().execute(query, [ status.toUpperCase(), userId ])
-        return result[0] 
+        return result[0]
     } catch (error) {
         throw new Error(`Get Order By Order Id: ${error.message}`)
     }
@@ -86,7 +86,7 @@ export const getOrderLinesByOrderId = async (orderId, authorizationToken) => {
                             Authorization: authorizationToken,
                         }
                     }
-                ) 
+                )
                 orderLines[index].Prd_TradeName = product.data.data.Prd_TradeName
                 orderLines[index].Prd_Image = product.data.data.Prd_Image
             }
