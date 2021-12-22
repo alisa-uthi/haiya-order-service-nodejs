@@ -2,6 +2,18 @@ const connection = require("../config/database");
 const axios = require("axios");
 const { OrderStatus } = require("../constants/order_status");
 
+export const getOrderByPharmacy = async (pharmacy) => {
+  let query = "SELECT * FROM `Order` WHERE Ord_Pharmacy = ? ";
+  query += "ORDER BY Ord_PayTimestamp DESC;";
+
+  try {
+    const result = await connection.promise().execute(query, [pharmacy]);
+    return result[0];
+  } catch (error) {
+    throw new Error(`Get Order By Pharmacy Name: ${error.message}`);
+  }
+};
+
 export const getOrderHistoryByUserId = async (userId) => {
   let query =
     "SELECT * FROM `Order` WHERE Ord_Psn_ID = ? AND Ord_OrderStatus = ? ";

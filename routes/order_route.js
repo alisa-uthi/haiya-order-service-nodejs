@@ -130,6 +130,17 @@ router.get("/user/:userId/orderStatus/:status", async (req, res) => {
   }
 });
 
+// Get order history by pharmacy name
+router.get("/pharmacy/:pharmacy", async (req, res) => {
+  const pharmacy = req.params.pharmacy;
+  try {
+    let orders = await orderService.getOrderByPharmacy(pharmacy);
+    return res.status(200).json({ data: orders });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 // Create delivery of given order id associated with a driver Id
 router.post("/:orderId/driver/:driverId/delivery", async (req, res) => {
   const { orderId, driverId } = req.params;
