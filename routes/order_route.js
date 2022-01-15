@@ -166,4 +166,34 @@ router.post("/:orderId/driver/:driverId/delivery", async (req, res) => {
   }
 });
 
+// Create Order distribution by order id
+router.post("/distribution/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    await orderService.createOrderDistribution(orderId);
+    res.status(201).json({ data: "The order distribution has been created." });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+// Update Order distribution by order id
+router.patch("/distribution/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+  const { status, rejectedBy, acceptedBy } = req.body;
+
+  try {
+    await orderService.updateOrderDistribution(
+      orderId,
+      status,
+      rejectedBy,
+      acceptedBy
+    );
+    res.status(200).json({ data: "The order distribution has been updated." });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

@@ -150,3 +150,58 @@ export const updateOrderDriverPerson = async (orderId, driverID) => {
     throw new Error(`Update Driver of the Order By Order Id: ${error.message}`);
   }
 };
+
+export const createOrderDistribution = async (orderId) => {
+  let query =
+    "INSERT INTO Order_Distribution (Ord_ID, Rejected_By) VALUES(?, '[]');";
+
+  try {
+    const result = await connection.promise().execute(query, [orderId]);
+    return result[0].insertId;
+  } catch (error) {
+    throw new Error(`Create Order Distribution By Order Id: ${error.message}`);
+  }
+};
+
+export const updateOrderDistribution = async (
+  orderId,
+  status,
+  rejectedBy,
+  acceptedBy
+) => {
+  let query = "UPDATE Order_Distribution SET `Status` = ?";
+  status = status.toUpperCase();
+
+  try {
+    if (status == "PENDING" && rejectedBy) {
+      query += ", Rejected_By = ? WHERE Ord_ID = ?;";
+
+      // Get list of driver who reject this order request
+      let rejectedByQuery =
+        "SELECT Rejected_By FROM Order_Distribution WHERE Ord_ID = ? ;";
+      let existingRejectedDrivers = await connection
+        .promise()
+        .execute(rejectedByQuery, [orderId]);
+
+      // Add new driver id who reject this order request
+      let rejectedDriverList = JSON.parse(
+        existingRejectedDrivers[0][0].Rejected_By
+      );
+      rejectedDriverList.push(rejectedBy);
+
+      // Update order distribution
+      await connection
+        .promise()
+        .execute(query, [status, JSON.stringify(rejectedDriverList), orderId]);
+    } else if (status == "ACCEPTED" && acceptedBy) {
+      query += ", Accepted_By = ? WHERE Ord_ID = ?;";
+      await connection.promise().execute(query, [status, acceptedBy, orderId]);
+    } else {
+      throw new Error(
+        `Invalid Status. The status must be either PENDING or ACCEPTED.`
+      );
+    }
+  } catch (error) {
+    throw new Error(`Update Order Distribution By Order Id: ${error.message}`);
+  }
+};
