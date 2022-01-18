@@ -151,6 +151,17 @@ export const updateOrderDriverPerson = async (orderId, driverID) => {
   }
 };
 
+export const getOrderDistributionByOrderId = async (orderId) => {
+  let query = "SELECT * FROM Order_Distribution WHERE Ord_ID = ? ;";
+
+  try {
+    const result = await connection.promise().execute(query, [orderId]);
+    return result[0][0];
+  } catch (error) {
+    throw new Error(`Get Order Distribution By Order Id: ${error.message}`);
+  }
+};
+
 export const createOrderDistribution = async (orderId) => {
   let query =
     "INSERT INTO Order_Distribution (Ord_ID, Rejected_By) VALUES(?, '[]');";

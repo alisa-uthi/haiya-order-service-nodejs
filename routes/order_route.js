@@ -166,6 +166,18 @@ router.post("/:orderId/driver/:driverId/delivery", async (req, res) => {
   }
 });
 
+// Get Order distribution by order id
+router.get("/distribution/:orderId", async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const result = await orderService.getOrderDistributionByOrderId(orderId);
+    res.status(200).json({ data: result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 // Create Order distribution by order id
 router.post("/distribution/:orderId", async (req, res) => {
   const { orderId } = req.params;
