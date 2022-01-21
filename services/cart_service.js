@@ -47,8 +47,8 @@ export const createCartByUserId = async (userId, pharmacyId) => {
 
 export const createCartItemByCartId = async (cartId, item) => {
   let query =
-    "INSERT INTO Cart_Item (Cart_ID, Prd_ID, Prd_Name, Prd_Qty, Total_Cost, Comment) ";
-  query += "VALUES(?, ?, ?, ?, ?, ?);";
+    "INSERT INTO Cart_Item (Cart_ID, Prd_ID, Prd_Name, Prd_Image, Prd_Qty, Total_Cost, Comment) ";
+  query += "VALUES(?, ?, ?, ?, ?, ?, ?);";
 
   try {
     await connection
@@ -57,6 +57,7 @@ export const createCartItemByCartId = async (cartId, item) => {
         cartId,
         item.productId,
         item.productName,
+        item.productImage,
         item.quantity,
         item.totalCost,
         item.comment,
