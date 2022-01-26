@@ -115,14 +115,42 @@ router.post("/user/:userId", async (req, res) => {
   }
 });
 
-// Get all orders by order status
+// Get all orders by order status and user id
 router.get("/user/:userId/orderStatus/:status", async (req, res) => {
   try {
     const { userId, status } = req.params;
 
     if (Object.values(OrderStatus).toString().includes(status.toUpperCase())) {
-      let order = await orderService.getOrderByOrderStatus(status, userId);
-      return res.status(200).json({ data: order });
+      let orders = await orderService.getOrderByOrderStatusAndUserId(
+        status,
+        userId
+      );
+      return res.status(200).json({ data: orders });
+    }
+    return res.status(400).json({ error: "Invalid order status." });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all orders by order status
+router.get("/orderStatus/:status", async (req, res) => {
+  try {
+    const { status } = req.params;
+    const authorizationToken = req.headers.authorization;
+
+    if (Object.values(OrderStatus).toString().includes(status.toUpperCase())) {
+      let orders = await orderService.getOrderByOrderStatus(status);
+
+      for (var order of orders) {
+        var orderLines = await orderService.getOrderLinesByOrderId(
+          order.ID,
+          authorizationToken
+        );
+        order.Ord_OrderLines = orderLines;
+      }
+
+      return res.status(200).json({ data: orders });
     }
     return res.status(400).json({ error: "Invalid order status." });
   } catch (error) {

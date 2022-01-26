@@ -82,7 +82,7 @@ export const getOrderByOrderId = async (orderId) => {
   }
 };
 
-export const getOrderByOrderStatus = async (status, userId) => {
+export const getOrderByOrderStatusAndUserId = async (status, userId) => {
   let query =
     "SELECT * FROM `Order` WHERE Ord_OrderStatus = ? AND Ord_Psn_ID = ? ;";
 
@@ -92,7 +92,20 @@ export const getOrderByOrderStatus = async (status, userId) => {
       .execute(query, [status.toUpperCase(), userId]);
     return result[0];
   } catch (error) {
-    throw new Error(`Get Order By Order Id: ${error.message}`);
+    throw new Error(`Get Order By Order Status and User ID: ${error.message}`);
+  }
+};
+
+export const getOrderByOrderStatus = async (status) => {
+  let query = "SELECT * FROM `Order` WHERE Ord_OrderStatus = ?  ;";
+
+  try {
+    let result = await connection
+      .promise()
+      .execute(query, [status.toUpperCase()]);
+    return result[0];
+  } catch (error) {
+    throw new Error(`Get Order By Order Status: ${error.message}`);
   }
 };
 
