@@ -33,7 +33,7 @@ export const createOrderByUserId = async (userId, data) => {
   let query = "INSERT INTO `Order` ";
   query +=
     "(Ord_DelAddr, Ord_DelPrice, Ord_PayTimestamp, Ord_OrderStatus, Ord_Psn_ID, Ord_Pharmacy) ";
-  query += "VALUES (?, ?, NOW(), ?, ?, ?);";
+  query += "VALUES (?, ?, NOW() + INTERVAL 7 HOUR, ?, ?, ?);";
 
   try {
     const result = await connection
