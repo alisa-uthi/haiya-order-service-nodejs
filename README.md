@@ -1,2 +1,2 @@
 # haiya-order-service-nodejs
-Order and delivery service of HAIYA project by using Node JS connects with MySQL database
+A microservice to let a customer order the pharmaceutical products and track the delivery status
